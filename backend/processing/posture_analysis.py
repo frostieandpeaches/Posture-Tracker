@@ -1,4 +1,5 @@
 import os
+import math
 import cv2
 import json
 import logging
@@ -65,7 +66,7 @@ def analyze_posture(video_path, file_id):
                 hip_y = landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y
                 shoulder_x = landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x
                 hip_x = landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x
-                posture_angle = 90-degrees(atan2(hip_y - shoulder_y, hip_x - shoulder_x))
+                posture_angle = 90-math.degrees(math.atan2(hip_y - shoulder_y, hip_x - shoulder_x))
                 posture_data.append(posture_angle)
 
                 # Draw landmarks for visual overlay
@@ -127,4 +128,5 @@ def analyze_posture(video_path, file_id):
     except Exception as e:
         logging.error(f"❌ Error during posture analysis: {e}")
         return {"status": "error", "message": str(e)}
+
 
