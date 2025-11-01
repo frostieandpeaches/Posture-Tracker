@@ -63,7 +63,9 @@ def analyze_posture(video_path, file_id):
                 landmarks = results.pose_landmarks.landmark
                 shoulder_y = landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y
                 hip_y = landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y
-                posture_angle = abs(shoulder_y - hip_y)
+                shoulder_x = landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x
+                hip_x = landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x
+                posture_angle = 90-degrees(atan2(hip_y - shoulder_y, hip_x - shoulder_x))
                 posture_data.append(posture_angle)
 
                 # Draw landmarks for visual overlay
@@ -125,3 +127,4 @@ def analyze_posture(video_path, file_id):
     except Exception as e:
         logging.error(f"❌ Error during posture analysis: {e}")
         return {"status": "error", "message": str(e)}
+
