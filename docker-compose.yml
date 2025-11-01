@@ -1,0 +1,48 @@
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend-1
+    working_dir: /app
+    ports:
+      - "5000:5000"
+    environment:
+      -HOST: localhost
+      -PORT: 5000
+    volumes:
+      - ./backend:/app
+      - ./backend/uploads:/app/uploads
+      - ./backend/results:/app/results
+    depends_on:
+      - redis
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-1
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./posture-frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+
+  redis:
+    image: redis:latest
+    container_name: redis-1
+    ports:
+      - "6379:6379"
+    command: redis-server --save "" --appendonly no
+
+  worker:
+    build: ./backend
+    working_dir: /app
+    command: rq worker --url redis://redis:6379
+    depends_on:
+    - redis
+    volumes:
+    - ./backend:/app
+    - ./backend/uploads:/app/uploads
+    - ./backend/results:/app/results

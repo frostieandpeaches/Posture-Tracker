@@ -1,0 +1,8 @@
+mediapipe
+opencv-python-headless
+numpy
+fastapi
+uvicorn
+redis
+rq
+python-multipart
